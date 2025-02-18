@@ -20,7 +20,7 @@ RocketOps leverages modern technologies to deliver a robust and scalable monitor
 
 | Component | Technology |
 |-----------|------------|
-| Backend Services | .NET 8 |
+| Backend Services | .NET 8 using C# |
 | API Gateway | Ocelot |
 | Frontend | React with TypeScript |
 | Database | Azure CosmosDB |
