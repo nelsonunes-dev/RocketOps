@@ -1,10 +1,22 @@
-# RocketOps - Deployment Health Monitor
+# RocketOps - Deployment Health Monitor (WIP)
 
-![RocketOps Logo](https://via.placeholder.com/200x100?text=RocketOps)
+This project is currently under active development. I'm building this as a proof-of-concept to demonstrate modern architectural approaches for monitoring deployment health.
+
+## Current Status
+
+- ✅ Solution architecture defined
+- ✅ Project structure set up
+- ✅ Shared libraries configuration
+- 🔄 Gateway API implementation (in progress)
+- 🔄 Microservices implementation (in progress)
+- ⏳ Frontend implementation (in progress)
+- ⏳ Testing implementation (planned)
 
 ## 1. Project Overview
 
 RocketOps is a comprehensive Deployment Health Monitoring system designed to provide real-time insights into the health and performance of applications in production environments. Built on a microservices architecture, RocketOps offers robust monitoring capabilities, intelligent alerting, and detailed reporting to ensure optimal application performance and reliability.
+
+## Technology Stack
 
 ### Key Features
 
@@ -154,7 +166,7 @@ Provides a responsive user interface:
 - Azure CLI (for CosmosDB emulator setup)
 - Git
 
-### Local Development Setup
+<!-- ### Local Development Setup
 
 #### 4.1 Clone the Repository
 
@@ -327,4 +339,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 9. Support
 
-For support, please contact the maintainers or raise an issue in the GitHub repository.
+For support, please contact the maintainers or raise an issue in the GitHub repository. -->
