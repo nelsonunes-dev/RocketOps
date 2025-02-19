@@ -1,4 +1,5 @@
 ﻿using Shared.Infrastructure.Configurations;
+using Shared.Infrastructure.Extensions;
 
 namespace Shared.Infrastructure;
 
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
 
     public static WebApplication UseSharedInfrastructureServices(this WebApplication app, IConfiguration configuration)
     {
+        app.UseMiddleware();
+
         app.UseSerilogRequestLogging();
 
         app.UseFastEndpointsConfiguration(app.Environment);
