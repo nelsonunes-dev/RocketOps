@@ -9,7 +9,7 @@ This project is currently under active development. I'm building this as a proof
 - ✅ Shared libraries configuration
 - 🔄 Gateway API implementation (in progress)
 - 🔄 Microservices implementation (in progress)
-- ⏳ Frontend implementation (in progress)
+- 🔄 Frontend implementation (in progress)
 - ⏳ Testing implementation (planned)
 
 ## 1. Project Overview

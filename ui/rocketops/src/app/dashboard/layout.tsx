@@ -57,23 +57,23 @@ export default function DashboardLayout({
     },
     {
       label: 'Launches',
-      href: '/launches',
+      href: '/dashboard/launches',
       icon: <LaunchIcon />,
       badge: 3,
     },
     {
       label: 'Missions',
-      href: '/missions',
+      href: '/dashboard/missions',
       icon: <MissionIcon />,
     },
     {
       label: 'Reports',
-      href: '/reports',
+      href: '/dashboard/reports',
       icon: <ReportIcon />,
     },
     {
       label: 'Settings',
-      href: '/settings',
+      href: '/dashboard/settings',
       icon: <SettingsIcon />,
     },
   ];

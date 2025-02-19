@@ -1,3 +1,5 @@
+'use client';  // Mark this as a client component
+
 import React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'ghost';
