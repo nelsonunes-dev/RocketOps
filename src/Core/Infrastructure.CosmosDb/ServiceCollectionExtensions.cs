@@ -1,5 +1,6 @@
 ﻿using Infrastructure.CosmosDb.Options;
 using Infrastructure.CosmosDb.Services;
+using Infrastructure.CosmosDb.HealthChecks;
 
 namespace Infrastructure.CosmosDb;
 
@@ -15,6 +16,11 @@ public static class ServiceCollectionExtensions
 
         // Register CosmosDB client service
         services.AddSingleton<CosmosDbClientService>();
+
+        // HealthChecks
+        services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy())
+            .AddCheck<CosmosDbHealthCheck>("cosmosdb-check");
 
         return services;
     }

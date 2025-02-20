@@ -1,6 +1,8 @@
-# RocketOps - Deployment Health Monitor (WIP)
+# RocketOps - Deployment Health Monitor
 
-This project is currently under active development. I'm building this as a proof-of-concept to demonstrate modern architectural approaches for monitoring deployment health.
+## 1. Project Overview
+
+RocketOps is a comprehensive Deployment Health Monitoring system designed to provide real-time insights into the health and performance of applications in production environments. Built on a microservices architecture, RocketOps offers robust monitoring capabilities, intelligent alerting, and detailed reporting to ensure optimal application performance and reliability.
 
 ## Current Status
 
@@ -12,23 +14,7 @@ This project is currently under active development. I'm building this as a proof
 - 🔄 Frontend implementation (in progress)
 - ⏳ Testing implementation (planned)
 
-## 1. Project Overview
-
-RocketOps is a comprehensive Deployment Health Monitoring system designed to provide real-time insights into the health and performance of applications in production environments. Built on a microservices architecture, RocketOps offers robust monitoring capabilities, intelligent alerting, and detailed reporting to ensure optimal application performance and reliability.
-
-## Technology Stack
-
-### Key Features
-
-- **Real-time Monitoring**: Continuous tracking of application metrics, logs, and performance indicators
-- **Intelligent Alerting**: Configurable thresholds with smart notification systems
-- **Comprehensive Reporting**: Detailed performance analytics and trend analysis
-- **Event-driven Architecture**: Responsive system design for real-time updates
-- **Scalable Infrastructure**: Cloud-native approach for handling varying workloads
-
 ## 2. Technology Stack
-
-RocketOps leverages modern technologies to deliver a robust and scalable monitoring solution:
 
 | Component | Technology |
 |-----------|------------|
@@ -44,299 +30,192 @@ RocketOps leverages modern technologies to deliver a robust and scalable monitor
 
 ## 3. Architecture
 
-RocketOps follows a microservices architecture with clean architecture principles and CQRS pattern implementation. The system is designed to be highly scalable, maintainable, and resilient.
+RocketOps follows a microservices architecture with clean architecture principles and CQRS pattern implementation:
 
-### Architecture Diagram
+### 3.1 Components
 
-Refer to the architecture diagram for a visual representation of RocketOps components and their interactions.
-
-### Components
-
-#### 3.1 API Gateway (Ocelot)
-
-The API Gateway serves as the entry point for all client requests, handling:
-
-- Request routing
-- Load balancing
-- Authentication & authorization
-- Rate limiting
-- Request aggregation
-
-#### 3.2 Microservices
-
-##### 3.2.1 Monitoring.API
-
-Responsible for collecting and processing metrics from deployed applications:
-
-- Health check management
-- Metric collection
-- Performance tracking
-- Resource utilization monitoring
-- Log aggregation
-
-##### 3.2.2 Alerts.API
-
-Manages the alerting system:
-
-- Alert rule configuration
-- Threshold management
-- Notification dispatch
-- Alert history
-- Escalation policies
-
-##### 3.2.3 Reporting.API
-
-Generates insights and reports:
-
-- Historical data analysis
-- Performance trending
-- Custom report generation
-- Scheduled reports
-- Data visualization endpoints
-
-#### 3.3 Shared Libraries
-
-##### 3.3.1 Infrastructure Library
-
-Contains cross-cutting concerns:
-
-- Logging
-- Authentication
-- Caching
-- Resilience patterns
-- Configuration management
-
-##### 3.3.2 Domain Library
-
-Houses the core business logic and domain models:
-
-- Entities
-- Value objects
-- Domain events
-- Business rules
-- Interfaces
-
-##### 3.3.3 Data Library
-
-Manages data access:
-
-- Repository implementations
-- Data mapping
-- Query optimization
-- Transaction management
-- Database migrations
-
-#### 3.4 Persistence Layer
-
-Azure CosmosDB is used for:
-
-- Scalable document storage
-- Multi-region replication
-- Automatic indexing
-- Low-latency data access
-- Flexible schema design
-
-#### 3.5 Event Bus
-
-Facilitates asynchronous communication between services:
-
-- Event publishing
-- Event subscription
-- Message reliability
-- Dead letter queuing
-- Message replay capabilities
-
-#### 3.6 React Frontend
-
-Provides a responsive user interface:
-
-- Real-time dashboards
-- Interactive visualizations
-- Responsive design
-- Progressive web app capabilities
-- Theme customization
+- **API Gateway (Ocelot)**: Routes requests, handles authentication, load balancing
+- **Microservices**:
+  - **Monitoring.API**: Health checks, metrics collection
+  - **Alerts.API**: Alert management, notifications
+  - **Reporting.API**: Analytics, report generation
+- **Shared Libraries**: Infrastructure, Domain, Data libraries
+- **Azure CosmosDB**: Persistent storage
+- **React Frontend**: Dashboards and visualizations
 
 ## 4. Setup Instructions
 
-### Prerequisites
+### 4.1 Prerequisites
 
 - .NET 8 SDK
 - Node.js (v18+)
 - Docker Desktop
-- Azure CLI (for CosmosDB emulator setup)
-- Git
+- OpenSSL (for certificate generation)
 
-<!-- ### Local Development Setup
+### 4.2 Quick Start
 
-#### 4.1 Clone the Repository
-
-```bash
-git clone https://github.com/your-org/rocketops.git
-cd rocketops
-```
-
-#### 4.2 Setup Environment
+#### 4.2.1 Generate Development Certificates
 
 ```bash
-# Copy example environment files
-cp .env.example .env
+# Linux/macOS
+./scripts/generate-certs.sh
+
+# Windows
+.\scripts\generate-certs.ps1
 ```
 
-#### 4.3 Start Development Environment with Docker
+#### 4.2.2 Start Development Environment
 
 ```bash
 docker-compose up -d
 ```
 
-This will start:
+#### 4.2.3 Access the Application
 
-- All microservices
-- API Gateway
-- CosmosDB emulator
-- Message broker
-- Frontend development server
+- Frontend: <https://localhost:3001>
+- Gateway API: <https://localhost:5001>
+- CosmosDB Emulator: <https://localhost:8081/_explorer/index.html>
 
-#### 4.4 Access the Application
+### 4.3 Project Structure
 
-- Frontend: <http://localhost:3000>
-- Swagger UI: <http://localhost:8080/swagger>
-- Individual service Swagger endpoints:
-  - Monitoring API: <http://localhost:5001/swagger>
-  - Alerts API: <http://localhost:5002/swagger>
-  - Reporting API: <http://localhost:5003/swagger>
-
-#### 4.5 Initialize Database
-
-```bash
-# Run database migrations
-dotnet run --project ./tools/DbMigrator/DbMigrator.csproj
+```
+RocketOps/
+├── src/
+│   ├── Gateway/                 # API Gateway
+│   └── Services/
+│       ├── Alerts/              # Alerts microservice
+│       ├── Monitoring/          # Monitoring microservice
+│       └── Reporting/           # Reporting microservice
+├── Ui/
+│   └── RocketOps/               # React frontend
+├── scripts/
+│   ├── generate-certs.sh        # SSL certificate generation (Linux/macOS)
+│   ├── generate-certs.ps1       # SSL certificate generation (Windows)
+│   └── init-cosmos-db.js        # CosmosDB initialization script
+├── certs/                       # Generated SSL certificates
+├── docker-compose.yml           # Docker Compose configuration
+└── README.md                    # This file
 ```
 
-### Manual Setup (Without Docker)
+### 4.4 Docker Commands
 
-For detailed instructions on setting up services individually, refer to the [Manual Setup Guide](./docs/manual-setup.md).
+#### 4.4.1 View Service Logs
+
+```bash
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f gateway
+docker-compose logs -f alerts-service
+docker-compose logs -f monitoring-service
+docker-compose logs -f reporting-service
+docker-compose logs -f frontend
+docker-compose logs -f cosmosdb
+```
+
+#### 4.4.2 Restart and Rebuild
+
+```bash
+# Restart all services
+docker-compose restart
+
+# Rebuild all services
+docker-compose build
+
+# Rebuild specific service
+docker-compose build gateway
+```
+
+#### 4.4.3 Stop Environment
+
+```bash
+# Stop containers
+docker-compose down
+
+# Stop and remove volumes
+docker-compose down -v
+```
+
+### 4.5 SSL Certificates
+
+The application uses self-signed SSL certificates for local development. After generating certificates, add the CA certificate to your trusted roots:
+
+#### 4.5.1 Windows
+
+1. Double-click on `certs/ca.crt`
+2. Select "Install Certificate" → "Local Machine" → "Trusted Root Certification Authorities"
+
+#### 4.5.2 macOS
+
+```bash
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ./certs/ca.crt
+```
+
+#### 4.5.3 Linux (Ubuntu/Debian)
+
+```bash
+sudo cp ./certs/ca.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+```
+
+### 4.6 Troubleshooting
+
+#### 4.6.1 CosmosDB Connection Issues
+
+- Check container status: `docker-compose ps cosmosdb`
+- View logs: `docker-compose logs cosmosdb`
+- Restart service: `docker-compose restart cosmosdb`
+
+#### 4.6.2 Certificate Issues
+
+- Verify certificate generation: `ls -la ./certs`
+- Ensure CA certificate is trusted
+- Regenerate certificates if needed
+
+#### 4.6.3 Port Conflicts
+
+Check for port availability:
+
+```bash
+# Windows
+netstat -ano | findstr "5000 5001 3000 3001 8081"
+
+# Linux/macOS
+netstat -tuln | grep -E '5000|5001|3000|3001|8081'
+```
+
+### 4.7 Health Monitoring
+
+Each service exposes a `/health` endpoint with:
+
+- Service self-check status
+- CosmosDB connectivity
+- Dependent service status (for Gateway)
 
 ## 5. Testing Approach
 
-RocketOps implements a comprehensive testing strategy to ensure quality and reliability:
-
-### 5.1 Unit Tests
-
-- Focus on testing individual components in isolation
-- Mock external dependencies using NSubstitute
-- Target high code coverage for domain and application layers
-- Run as part of CI pipeline
-
-```bash
-# Run all unit tests
-dotnet test ./tests/UnitTests
-```
-
-### 5.2 Integration Tests
-
-- Test interaction between components
-- Use test containers for external dependencies
-- Focus on repository implementations and service integrations
-- Verify CQRS command/query handling
-
-```bash
-# Run all integration tests
-dotnet test ./tests/IntegrationTests
-```
-
-### 5.3 End-to-End Tests
-
-- Use Playwright for browser automation
-- Test complete user journeys
-- Verify frontend-backend integration
-- Run against isolated test environment
-
-```bash
-# Install Playwright browsers
-cd ./tests/E2ETests
-npm install
-npx playwright install
-
-# Run E2E tests
-npx playwright test
-```
-
-### 5.4 Performance Tests
-
-- Load testing with k6
-- Benchmark critical operations
-- Verify scalability under load
-- Run as part of release pipeline
+(Testing implementation details will be added here)
 
 ## 6. Design Decisions and Patterns
 
-### 6.1 Clean Architecture
+- **Clean Architecture**: Separation of domain, application, and infrastructure concerns
+- **CQRS**: Command/Query separation for optimized operations
+- **Event-Driven Architecture**: Asynchronous communication between services
+- **API Gateway Pattern**: Centralized request handling
+- **Health Check Pattern**: Monitoring service status and dependencies
 
-RocketOps follows Clean Architecture principles to maintain a clear separation of concerns:
+## 7. Key Features
 
-- **Core Domain**: Contains business logic, entities, and interfaces
-- **Application Layer**: Implements use cases through CQRS
-- **Infrastructure Layer**: Provides technical implementations
-- **Presentation Layer**: Handles user interaction
+- **Real-time Monitoring**: Continuous tracking of application metrics
+- **Intelligent Alerting**: Configurable thresholds with notifications
+- **Comprehensive Reporting**: Performance analytics and trend analysis
+- **Scalable Infrastructure**: Docker-based containerization
 
-Benefits:
+<!-- ## 8. Contributing
 
-- Independence from frameworks
-- Testability
-- Separation of concerns
-- Dependency rule enforcement
+(Contributing guidelines will be added here)
 
-### 6.2 CQRS (Command Query Responsibility Segregation)
+## 9. License
 
-- **Commands**: Handle write operations and state changes
-- **Queries**: Handle read operations with optimized data access
-
-Implementation details:
-
-- MediatR for in-process messaging
-- Separate command and query handlers
-- Validation using FluentValidation
-- Response caching for queries
-
-### 6.3 Event-Driven Architecture
-
-- Services communicate via events
-- Loose coupling between components
-- Improved system resilience
-- Better scalability
-
-Event flow:
-
-1. Services publish domain events
-2. Event bus distributes events
-3. Subscribers process events asynchronously
-
-### 6.4 API Design
-
-- RESTful API design with resource-based routing
-- FastEndpoints for streamlined endpoint definition
-- Versioning support
-- Comprehensive documentation with Swagger
-- Standardized response formats
-- Problem Details for error responses (RFC 7807)
-
-### 6.5 Security Considerations
-
-- JWT-based authentication
-- Role-based authorization
-- Data encryption at rest and in transit
-- Rate limiting
-- Input validation and sanitization
-- Audit logging
-
-## 7. Contributing
-
-Please read our [Contributing Guidelines](./CONTRIBUTING.md) for details on submitting pull requests.
-
-## 8. License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
-## 9. Support
-
-For support, please contact the maintainers or raise an issue in the GitHub repository. -->
+(License information will be added here) -->

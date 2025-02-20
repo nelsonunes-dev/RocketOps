@@ -1,4 +1,5 @@
-﻿using Shared.Infrastructure.Configurations;
+﻿using Infrastructure.CosmosDb;
+using Shared.Infrastructure.Configurations;
 using Shared.Infrastructure.Extensions;
 
 namespace Shared.Infrastructure;
@@ -11,7 +12,12 @@ public static class ServiceCollectionExtensions
         
         services.AddFastEndpointsConfiguration(configuration);
         services.AddOpenApiConfiguration(configuration);
-        
+
+        services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy());
+
+        services.AddCosmosDb(configuration);
+
         return services;
     }
 

@@ -6,3 +6,4 @@ global using Microsoft.Extensions.Options;
 global using Polly;
 global using System.Net;
 global using System.ComponentModel.DataAnnotations;
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
