@@ -196,14 +196,7 @@ This will start:
 - Message broker
 - Frontend development server
 
-#### 4.4 Initialize Database
-
-```bash
-# Run database migrations
-dotnet run --project ./tools/DbMigrator/DbMigrator.csproj
-```
-
-#### 4.5 Access the Application
+#### 4.4 Access the Application
 
 - Frontend: <http://localhost:3000>
 - Swagger UI: <http://localhost:8080/swagger>
@@ -211,6 +204,13 @@ dotnet run --project ./tools/DbMigrator/DbMigrator.csproj
   - Monitoring API: <http://localhost:5001/swagger>
   - Alerts API: <http://localhost:5002/swagger>
   - Reporting API: <http://localhost:5003/swagger>
+
+#### 4.5 Initialize Database
+
+```bash
+# Run database migrations
+dotnet run --project ./tools/DbMigrator/DbMigrator.csproj
+```
 
 ### Manual Setup (Without Docker)
 

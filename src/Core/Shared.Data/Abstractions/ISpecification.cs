@@ -3,43 +3,43 @@
 namespace Shared.Data.Abstractions;
 
 /// <summary>
-/// Specification interface for querying
+/// Represents a query specification for filtering and querying entities
 /// </summary>
-/// <typeparam name="T">Entity type</typeparam>
+/// <typeparam name="T">The type of entity to specify</typeparam>
 public interface ISpecification<T> where T : Entity
 {
     /// <summary>
-    /// Criteria for filtering
+    /// The primary filtering criteria for the specification
     /// </summary>
     Expression<Func<T, bool>> Criteria { get; }
 
     /// <summary>
-    /// Includes for eager loading
+    /// Additional includes to eager load related entities
     /// </summary>
     List<Expression<Func<T, object>>> Includes { get; }
 
     /// <summary>
-    /// Order by expressions
+    /// Ordering expression for ascending order
     /// </summary>
     Expression<Func<T, object>>? OrderBy { get; }
 
     /// <summary>
-    /// Order by descending
+    /// Ordering expression for descending order
     /// </summary>
     Expression<Func<T, object>>? OrderByDescending { get; }
 
     /// <summary>
-    /// Paging information
+    /// Number of items to take (for pagination)
     /// </summary>
     int Take { get; }
 
     /// <summary>
-    /// Paging information
+    /// Number of items to skip (for pagination)
     /// </summary>
     int Skip { get; }
 
     /// <summary>
-    /// Pagination enabled
+    /// Indicates if pagination is enabled
     /// </summary>
     bool IsPagingEnabled { get; }
 }
