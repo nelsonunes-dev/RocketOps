@@ -13,13 +13,14 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Gateway\Gateway\Gateway.csproj" />
+    <ProjectReference Include="..\..\Gateway\RocketOps.Gateway\RocketOps.Gateway.csproj" />
     <ProjectReference Include="..\..\Services\Alerts.Api\Alerts.Api.csproj" />
-    <ProjectReference Include="..\..\Services\Monitoring.Api\Monitoring.Api.csproj" />
     <ProjectReference Include="..\..\Services\Reporting.Api\Reporting.Api.csproj" />
+    <ProjectReference Include="..\..\Services\RocketOps.Monitoring.Api\RocketOps.Monitoring.Api.csproj" />
   </ItemGroup>
 
 </Project>
