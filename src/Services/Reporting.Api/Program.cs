@@ -1,22 +1,32 @@
+using RocketOps.Aspire.ServiceDefaults;
+using RocketOps.Core.Infrastructure;
+using RocketOps.Core.Infrastructure.Configurations;
 using Serilog;
-using ServiceDefaults;
-using Shared.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Host.UseShareInfrastructureHostServices(builder.Configuration);
-builder.Services.AddSharedInfrastructureServices(builder.Configuration);
+// Host configuration
+builder.Host.UseCoreInfrastructureHostServices(builder.Configuration);
+
+// Service registration - ONCE only
+builder.Services.AddCoreInfrastructureServices(builder.Configuration);
+builder.Services.AddControllers();
+
+// Add FastEndpoints and OpenAPI
+builder.Services.AddFastEndpointsConfiguration(builder.Configuration);
+builder.Services.AddOpenApiConfiguration(builder.Configuration);
 
 var app = builder.Build();
 app.MapDefaultEndpoints();
-app.UseSharedInfrastructureServices(builder.Configuration);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-}
+// Use infrastructure middleware
+app.UseCoreInfrastructureServices();
+
+// Use FastEndpoints and OpenAPI
+app.UseFastEndpointsConfiguration(app.Environment);
+app.UseOpenApiConfiguration(app.Configuration);
 
 app.UseHttpsRedirection();
 

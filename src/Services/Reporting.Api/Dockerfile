@@ -1,30 +1,37 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# This stage is used to build the service project
+# Use the generalized microservice Dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/Services/Reporting.Api/Reporting.Api.csproj", "src/Services/Reporting.Api/"]
-RUN dotnet restore "./src/Services/Reporting.Api/Reporting.Api.csproj"
-COPY . .
-WORKDIR "/src/src/Services/Reporting.Api"
-RUN dotnet build "./Reporting.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Reporting.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
-FROM base AS final
 WORKDIR /app
+
+# Customize for Reporting service
+ARG PROJECT_PATH=src/Services/Reporting.Api
+ARG PROJECT_NAME=Reporting.Api
+
+# Copy project files
+COPY ["${PROJECT_PATH}/${PROJECT_NAME}.csproj", "project/"]
+
+# Restore dependencies
+WORKDIR /app/project
+RUN dotnet restore "${PROJECT_NAME}.csproj"
+
+# Copy the entire source code
+COPY . /app
+
+# Build the application
+WORKDIR /app
+RUN dotnet build "${PROJECT_PATH}/${PROJECT_NAME}.csproj" -c Release -o /app/build
+
+# Publish the application
+FROM build AS publish
+RUN dotnet publish "${PROJECT_PATH}/${PROJECT_NAME}.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+# Copy the published output
 COPY --from=publish /app/publish .
+
+# Set the entry point for Reporting service
 ENTRYPOINT ["dotnet", "Reporting.Api.dll"]

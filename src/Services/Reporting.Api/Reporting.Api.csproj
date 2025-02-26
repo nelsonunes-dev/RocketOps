@@ -11,13 +11,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.13" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aspire\ServiceDefaults\ServiceDefaults.csproj" />
-    <ProjectReference Include="..\..\Core\Infrastructure.CosmosDb\Infrastructure.CosmosDb.csproj" />
-    <ProjectReference Include="..\..\Core\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Aspire\RocketOps.Aspire.ServiceDefaults\RocketOps.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Core\RocketOps.Core.Infrastructure\RocketOps.Core.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
