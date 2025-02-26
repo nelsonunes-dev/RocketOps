@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FastEndpoints" Version="5.34.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MediatR" Version="12.4.1" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\RocketOps.Core.Application\RocketOps.Core.Application.csproj" />
+		<ProjectReference Include="..\..\Core\RocketOps.Core.Infrastructure\RocketOps.Core.Infrastructure.csproj" />
+		<ProjectReference Include="..\RocketOps.Monitoring.Domain\RocketOps.Monitoring.Domain.csproj" />
+		<ProjectReference Include="..\RocketOps.Monitoring.Infrastructure\RocketOps.Monitoring.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>
