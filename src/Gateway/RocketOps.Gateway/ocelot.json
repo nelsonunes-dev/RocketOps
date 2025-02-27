@@ -1,19 +1,10 @@
 {
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5001"
+  },
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "alerts-service",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/api/alerts/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -22,10 +13,24 @@
         }
       ],
       "UpstreamPathTemplate": "/api/monitoring/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "monitoring"
     },
     {
-      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "alerts-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/alerts/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "alerts"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -34,10 +39,76 @@
         }
       ],
       "UpstreamPathTemplate": "/api/reporting/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "reporting"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "monitoring-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/monitoring/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "alerts-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/alerts/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reporting-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/reporting/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ],
-  "GlobalConfiguration": {
-    "BaseUrl": "http://gateway"
-  }
+  "SwaggerEndPoints": [
+    {
+      "Key": "monitoring",
+      "Config": [
+        {
+          "Name": "Monitoring API",
+          "Version": "v1",
+          "Url": "http://monitoring-service:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "alerts",
+      "Config": [
+        {
+          "Name": "Alerts API",
+          "Version": "v1",
+          "Url": "http://alerts-service:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "reporting",
+      "Config": [
+        {
+          "Name": "Reporting API",
+          "Version": "v1",
+          "Url": "http://reporting-service:80/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
 }

@@ -8,11 +8,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMonitoringApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers();
-
+        // Add Core services first
         services.AddCoreInfrastructureServices(configuration);
 
-        // Add monitoring services
+        // Then add monitoring-specific services
         services.AddMonitoringApplicationServices();
         services.AddMonitoringInfrastructureServices(configuration);
 
@@ -22,7 +21,6 @@ public static class ServiceCollectionExtensions
     public static WebApplication UseMonitoringApiServices(this WebApplication app)
     {
         app.UseRouting();
-
         app.UseCoreInfrastructureServices();
 
         return app;

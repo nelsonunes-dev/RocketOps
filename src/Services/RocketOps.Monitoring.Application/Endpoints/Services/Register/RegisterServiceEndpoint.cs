@@ -1,5 +1,4 @@
-﻿// Place this file in src/Services/RocketOps.Monitoring.Application/Endpoints/Services/RegisterServiceEndpoint.cs
-using FastEndpoints;
+﻿using FastEndpoints;
 using RocketOps.Core.Application.CQRS;
 using RocketOps.Monitoring.Application.Commands.RegisterService;
 
@@ -16,12 +15,20 @@ public class RegisterServiceEndpoint : Endpoint<RegisterServiceRequest, Register
 
     public override void Configure()
     {
-        Post("/api/services");
+        // Remove the "api/" prefix since it's already configured globally
+        Post("/services");
         AllowAnonymous(); // Replace with proper auth
         Summary(s =>
         {
             s.Summary = "Register a new service";
             s.Description = "Registers a new service for monitoring";
+            s.ExampleRequest = new RegisterServiceRequest
+            {
+                Name = "Example Service",
+                BaseUrl = "https://example.com/api",
+                Description = "An example service for monitoring"
+            };
+            s.Response<RegisterServiceResponse>(201, "Service created successfully");
         });
     }
 

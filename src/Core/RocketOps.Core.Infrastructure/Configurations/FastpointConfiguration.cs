@@ -59,8 +59,8 @@ public static class FastEndpointsConfiguration
         // Configure FastEndpoints middleware
         app.UseFastEndpoints(config =>
         {
-            // Configure global endpoints settings
-            config.Endpoints.RoutePrefix = "api";
+            // Remove the route prefix here as endpoints already have it
+            // config.Endpoints.RoutePrefix = "api";
 
             // Configure error handling
             config.Errors.ResponseBuilder = (failures, ctx, statusCode) =>
@@ -77,6 +77,9 @@ public static class FastEndpointsConfiguration
                     }).ToList()
                 };
             };
+
+            // Add this for Swagger to properly discover endpoints
+            config.Serializer.Options.PropertyNamingPolicy = null;
         });
 
         // Use CORS

@@ -16,8 +16,7 @@ public static class OpenApiConfiguration
         services.Configure<OpenApiOption>(configuration.GetSection(OpenApiOption.ConfigurationKey));
 
         // Get options
-        var options = configuration.GetSection(OpenApiOption.ConfigurationKey).Get<OpenApiOption>()
-            ?? new OpenApiOption();
+        var options = configuration.GetSection(OpenApiOption.ConfigurationKey).Get<OpenApiOption>() ?? new OpenApiOption();
 
         // Add Swagger for FastEndpoints
         services.SwaggerDocument(o => {
@@ -26,6 +25,8 @@ public static class OpenApiConfiguration
                 s.Description = options.Description;
                 s.Version = options.Version;
             };
+            // Specify tags for organizing endpoints
+            // o.TagsSelector = endpoint => new[] { endpoint.HttpMethod };
         });
 
         return services;
@@ -34,44 +35,26 @@ public static class OpenApiConfiguration
     public static WebApplication UseOpenApiConfiguration(this WebApplication app, IConfiguration configuration)
     {
         // Only expose Swagger in Development/Staging or if explicitly enabled
-        var apiSettings = configuration.GetSection("ApiSettings");
-        var enableSwagger = app.Environment.IsDevelopment() || app.Environment.IsStaging() || apiSettings.GetValue<bool>("EnableSwaggerInProduction");
+        // Fix: Get the setting from OpenApi section instead of non-existent ApiSettings
+        var openApiSettings = configuration.GetSection(OpenApiOption.ConfigurationKey);
+        var enableSwagger = app.Environment.IsDevelopment() ||
+                            app.Environment.IsStaging() ||
+                            openApiSettings.GetValue<bool>("EnableSwaggerInProduction");
 
         if (enableSwagger)
         {
             // Configure Swagger middleware
             app.UseSwaggerGen();
 
-            // Configure Swagger UI
-            var routePrefix = apiSettings["SwaggerRoute"] ?? "swagger";
-            app.UseSwaggerUI(options =>
-            {
-                options.DefaultModelsExpandDepth(-1); // Hide schemas section by default
-                options.DocExpansion(DocExpansion.List);
-                options.RoutePrefix = routePrefix;
-                options.DocumentTitle = apiSettings["Title"] ?? "RocketOps API Documentation";
-
-                // Add custom CSS/JS if configured
-                var customCss = apiSettings["SwaggerCustomCss"];
-                if (!string.IsNullOrEmpty(customCss))
-                {
-                    options.InjectStylesheet(customCss);
-                }
-
-                var customJs = apiSettings["SwaggerCustomJs"];
-                if (!string.IsNullOrEmpty(customJs))
-                {
-                    options.InjectJavascript(customJs);
-                }
+            // Configure Swagger UI with explicit endpoint
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RocketOps API v1");
+                c.RoutePrefix = "swagger";
+                c.DefaultModelsExpandDepth(-1); // Hide schemas section by default
+                c.DocExpansion(DocExpansion.List);
             });
         }
 
         return app;
     }
-}
-
-public class ApiServer
-{
-    public string Url { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
 }

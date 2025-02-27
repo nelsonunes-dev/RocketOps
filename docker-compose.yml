@@ -2,219 +2,117 @@ services:
   # Gateway API
   gateway:
     build:
-      context: ./src
-      dockerfile: Gateway/RocketOps.Gateway/Dockerfile
+      context: .
+      dockerfile: src/Gateway/RocketOps.Gateway/Dockerfile
     ports:
       - "5000:80"
       - "5001:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    volumes:
-      - ./certs:/https:ro
-    depends_on:
-      cosmosdb:
-        condition: service_healthy
+      - ASPNETCORE_URLS=http://+:80
     networks:
       - rocketops-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        tag: "{{.Name}}"
+    depends_on:
+      - monitoring-service
+      - alerts-service
+      - reporting-service
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
 
   # Alerts Microservice
   alerts-service:
     build:
-      context: ./src
-      dockerfile: Services/Alerts.Api/Dockerfile
+      context: .
+      dockerfile: src/Services/Alerts.Api/Dockerfile
     ports:
-      - "5010:80"
-      - "5011:443"
+      - "5020:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__CosmosDb=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
       - CosmosDb__DatabaseId=RocketOpsDb
-    volumes:
-      - ./certs:/https:ro
-    depends_on:
-      cosmosdb:
-        condition: service_healthy
-      init-db:
-        condition: service_completed_successfully
     networks:
       - rocketops-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        tag: "{{.Name}}"
+    depends_on:
+      - cosmosdb
+      - init-db
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.30'
-          memory: 512M
-        reservations:
-          cpus: '0.15'
-          memory: 256M
 
   # Monitoring Microservice
   monitoring-service:
     build:
-      context: ./src
-      dockerfile: Services/RocketOps.Monitoring.Api/Dockerfile
+      context: .
+      dockerfile: src/Services/RocketOps.Monitoring.Api/Dockerfile
     ports:
-      - "5020:80"
-      - "5021:443"
+      - "5010:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__CosmosDb=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
       - CosmosDb__DatabaseId=RocketOpsDb
-    volumes:
-      - ./certs:/https:ro
-    depends_on:
-      cosmosdb:
-        condition: service_healthy
-      init-db:
-        condition: service_completed_successfully
     networks:
       - rocketops-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        tag: "{{.Name}}"
+    depends_on:
+      - cosmosdb
+      - init-db
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.30'
-          memory: 512M
-        reservations:
-          cpus: '0.15'
-          memory: 256M
 
   # Reporting Microservice
   reporting-service:
     build:
-      context: ./src
-      dockerfile: Services/Reporting.Api/Dockerfile
+      context: .
+      dockerfile: src/Services/Reporting.Api/Dockerfile
     ports:
       - "5030:80"
-      - "5031:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__CosmosDb=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
       - CosmosDb__DatabaseId=RocketOpsDb
-    volumes:
-      - ./certs:/https:ro
-    depends_on:
-      cosmosdb:
-        condition: service_healthy
-      init-db:
-        condition: service_completed_successfully
     networks:
       - rocketops-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        tag: "{{.Name}}"
+    depends_on:
+      - cosmosdb
+      - init-db
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.30'
-          memory: 512M
-        reservations:
-          cpus: '0.15'
-          memory: 256M
 
-# Frontend
+  # Frontend
   frontend:
     build:
-      context: ./ui/rocketops  # Corrected path to frontend
+      context: ./ui/rocketops
       dockerfile: Dockerfile
     ports:
       - "3000:80"
-      - "3001:443"
-    volumes:
-      - ./certs:/etc/nginx/certs:ro
-    depends_on:
-      gateway:
-        condition: service_healthy
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
     networks:
       - rocketops-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health.json"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        tag: "{{.Name}}"
+    depends_on:
+      - gateway
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
-        reservations:
-          cpus: '0.10'
-          memory: 128M
 
   # CosmosDB Emulator
   cosmosdb:
@@ -224,7 +122,6 @@ services:
     environment:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
       - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
-      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1
     ports:
       - "8081:8081"
       - "10251:10251"
@@ -236,32 +133,17 @@ services:
     networks:
       - rocketops-network
     healthcheck:
-      test: ["CMD", "curl", "-k", "--fail", "https://localhost:8081/_explorer/"]
-      interval: 10s
+      test: ["CMD", "wget", "--no-check-certificate", "--spider", "https://localhost:8081/_explorer/"]
+      interval: 15s
       timeout: 10s
-      retries: 20
-      start_period: 30s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "20m"
-        max-file: "3"
-        tag: "{{.Name}}"
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 2G
-        reservations:
-          cpus: '0.5'
-          memory: 1G
+      retries: 5
+      start_period: 40s
 
   # Database initialization service
   init-db:
     image: node:18-alpine
     depends_on:
-      cosmosdb:
-        condition: service_healthy
+      - cosmosdb
     networks:
       - rocketops-network
     volumes:
@@ -269,23 +151,7 @@ services:
     working_dir: /app
     command: >
       sh -c "npm install @azure/cosmos && node init-cosmos-db.js"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "1"
-        tag: "{{.Name}}"
     restart: on-failure
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 256M
 
 volumes:
   cosmosdb-data:

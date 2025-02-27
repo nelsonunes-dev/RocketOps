@@ -1,36 +1,48 @@
-using RocketOps.Aspire.ServiceDefaults;
+using FastEndpoints;
+using Microsoft.OpenApi.Models;
 using RocketOps.Core.Infrastructure;
-using RocketOps.Core.Infrastructure.Configurations;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
-
-// Host configuration
-builder.Host.UseCoreInfrastructureHostServices(builder.Configuration);
-
-// Service registration - ONCE only
-builder.Services.AddCoreInfrastructureServices(builder.Configuration);
+// Basic services
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
-// Add FastEndpoints and OpenAPI
-builder.Services.AddFastEndpointsConfiguration(builder.Configuration);
-builder.Services.AddOpenApiConfiguration(builder.Configuration);
+// Add explicit Swagger configuration
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RocketOps API", Version = "v1" });
+});
+
+// Add FastEndpoints with minimal config
+builder.Services.AddFastEndpoints();
+
+// Add core services (reduced config)
+builder.Services.AddCoreInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
-app.MapDefaultEndpoints();
 
-// Use infrastructure middleware
-app.UseCoreInfrastructureServices();
+// Enable detailed error page
+app.UseDeveloperExceptionPage();
 
-// Use FastEndpoints and OpenAPI
-app.UseFastEndpointsConfiguration(app.Environment);
-app.UseOpenApiConfiguration(app.Configuration);
+// Ensure the order is correct for middleware
+app.UseRouting();
+app.UseAuthorization();
+
+// Explicitly configure Swagger (without FastEndpoints integration for now)
+app.UseSwagger();
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RocketOps Reporting API v1");
+    c.DefaultModelsExpandDepth(-1);
+    c.DocExpansion(DocExpansion.List);
+});
+
+// Then use FastEndpoints
+app.UseFastEndpoints();
 
 app.UseHttpsRedirection();
-
-// Make sure this is called at application shutdown
-app.Lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+app.MapControllers();
 
 app.Run();

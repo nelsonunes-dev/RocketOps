@@ -9,8 +9,10 @@ RocketOps is a comprehensive Deployment Health Monitoring system designed to pro
 - ✅ Solution architecture defined
 - ✅ Project structure set up
 - ✅ Shared libraries configuration
-- 🔄 Gateway API implementation (in progress)
-- 🔄 Microservices implementation (in progress)
+- ✅ Gateway API implementation completed
+- ✅ Microservices API endpoints operational
+- ✅ Swagger documentation integrated
+- ✅ Docker containerization configured
 - 🔄 Frontend implementation (in progress)
 - ⏳ Testing implementation (planned)
 
@@ -19,7 +21,9 @@ RocketOps is a comprehensive Deployment Health Monitoring system designed to pro
 | Component | Technology |
 |-----------|------------|
 | Backend Services | .NET 8 using C# |
+| API Framework | FastEndpoints |
 | API Gateway | Ocelot |
+| API Documentation | Swagger / OpenAPI |
 | Frontend | React with TypeScript |
 | Database | Azure CosmosDB |
 | Communication | Event-driven messaging |
@@ -39,7 +43,7 @@ RocketOps follows a microservices architecture with clean architecture principle
   - **Monitoring.API**: Health checks, metrics collection
   - **Alerts.API**: Alert management, notifications
   - **Reporting.API**: Analytics, report generation
-- **Shared Libraries**: Infrastructure, Domain, Data libraries
+- **Shared Libraries**: Core infrastructure, domain models, data access
 - **Azure CosmosDB**: Persistent storage
 - **React Frontend**: Dashboards and visualizations
 
@@ -72,8 +76,12 @@ docker-compose up -d
 
 #### 4.2.3 Access the Application
 
-- Frontend: <https://localhost:3001>
-- Gateway API: <https://localhost:5001>
+- Frontend: <http://localhost:3000>
+- Gateway API: <http://localhost:5000>
+- Gateway Swagger: <http://localhost:5000/swagger>
+- Monitoring API: <http://localhost:5010/swagger>
+- Alerts API: <http://localhost:5020/swagger>
+- Reporting API: <http://localhost:5030/swagger>
 - CosmosDB Emulator: <https://localhost:8081/_explorer/index.html>
 
 ### 4.3 Project Structure
@@ -81,13 +89,17 @@ docker-compose up -d
 ```
 RocketOps/
 ├── src/
+│   ├── Core/                    # Shared core libraries
+│   │   ├── Application/         # CQRS, application services
+│   │   ├── Domain/              # Domain models, events
+│   │   └── Infrastructure/      # Cross-cutting concerns
 │   ├── Gateway/                 # API Gateway
 │   └── Services/
-│       ├── Alerts/              # Alerts microservice
-│       ├── Monitoring/          # Monitoring microservice
-│       └── Reporting/           # Reporting microservice
-├── Ui/
-│   └── RocketOps/               # React frontend
+│       ├── Alerts.Api/          # Alerts microservice
+│       ├── RocketOps.Monitoring.Api/  # Monitoring microservice
+│       └── Reporting.Api/       # Reporting microservice
+├── ui/
+│   └── rocketops/               # React frontend
 ├── scripts/
 │   ├── generate-certs.sh        # SSL certificate generation (Linux/macOS)
 │   ├── generate-certs.ps1       # SSL certificate generation (Windows)
@@ -121,10 +133,10 @@ docker-compose logs -f cosmosdb
 docker-compose restart
 
 # Rebuild all services
-docker-compose build
+docker-compose up --build
 
 # Rebuild specific service
-docker-compose build gateway
+docker-compose up --build gateway
 ```
 
 #### 4.4.3 Stop Environment
@@ -161,17 +173,20 @@ sudo update-ca-certificates
 
 ### 4.6 Troubleshooting
 
-#### 4.6.1 CosmosDB Connection Issues
+### 4.6.1 Swagger Not Loading
 
-- Check container status: `docker-compose ps cosmosdb`
-- View logs: `docker-compose logs cosmosdb`
-- Restart service: `docker-compose restart cosmosdb`
+## If Swagger UI returns a 500 error
 
-#### 4.6.2 Certificate Issues
+- Check service logs: docker-compose logs [service-name]
+- Verify Program.cs configuration has proper middleware ordering
+- Ensure OpenAPI configuration is correct in appsettings.json
 
-- Verify certificate generation: `ls -la ./certs`
-- Ensure CA certificate is trusted
-- Regenerate certificates if needed
+### 4.6.2 CosmosDB Connection Issues
+
+- Check container status: docker-compose ps cosmosdb
+- View logs: docker-compose logs cosmosdb
+- Restart service: docker-compose restart cosmosdb
+- Verify your host machine can access the emulator: <https://localhost:8081/_explorer/>
 
 #### 4.6.3 Port Conflicts
 
@@ -204,6 +219,8 @@ Each service exposes a `/health` endpoint with:
 - **Event-Driven Architecture**: Asynchronous communication between services
 - **API Gateway Pattern**: Centralized request handling
 - **Health Check Pattern**: Monitoring service status and dependencies
+- **Options Pattern**: Consistent configuration across services
+- **FastEndpoints Pattern**: Vertical slice architecture for API endpoints
 
 ## 7. Key Features
 
@@ -211,6 +228,8 @@ Each service exposes a `/health` endpoint with:
 - **Intelligent Alerting**: Configurable thresholds with notifications
 - **Comprehensive Reporting**: Performance analytics and trend analysis
 - **Scalable Infrastructure**: Docker-based containerization
+- **API Documentation**: Interactive Swagger UI for all endpoints
+- **Containerized Development**: Consistent environment across all developers
 
 <!-- ## 8. Contributing
 
